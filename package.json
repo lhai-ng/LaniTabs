@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "minify": "terser src/lanitabs.js -o lanitabs.min.js && csso src/lanitabs.css -o lanitabs.min.css"
+  },
+  "dependencies": {
+    "csso-cli": "^4.0.2",
+    "terser": "^5.43.1"
+  }
+}
