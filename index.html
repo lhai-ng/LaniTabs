@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaniTabs</title>
+    <link rel="stylesheet" href="src/lanitabs.css">
+    <style>
+        .lanitabs--active a {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container -->
+    <ul id="tabs">
+        <!-- Tabs -->
+        <li><a href="#tabs1">Tab 1</a></li>
+        <li><a href="#tabs2">Tab 2</a></li>
+        <li><a href="#tabs3">Tab 3</a></li>
+    </ul>
+
+    <!-- Panels -->
+    <div id="tabs1">Tabs 1 Content</div>
+    <div id="tabs2">Tabs 2 Content</div>
+    <div id="tabs3">Tabs 3 Content</div>
+    <script src="src/lanitabs.js"></script>
+    <script>
+       const tabs = new LaniTabs('#tabs')
+    </script>
+</body>
+</html>
