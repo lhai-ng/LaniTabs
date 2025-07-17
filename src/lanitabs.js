@@ -1,4 +1,4 @@
-function LaniTabs(selector) {
+function LaniTabs(selector, options = {}) {
     this.container = document.querySelector(selector);
     if (!this.container) {
         console.error(`LaniTabs: No container found for this selector: ${selector}`);
@@ -27,12 +27,22 @@ function LaniTabs(selector) {
         .filter(Boolean);
     if (this.tabs.length !== this.panels.length) return;
     
+    this.opt = Object.assign({
+        remember: false,
+    }, options);
+
     this._originalTabs = this.container.innerHTML;
+
     this._init();
 }
 
 LaniTabs.prototype._init = function () {
-    this._activeTab(this.tabs[0]);
+    const hash = location.hash;
+    const tab = 
+        (this.opt.remember && hash && this.tabs.find(tab => tab.getAttribute('href') === hash)) || 
+        this.tabs[0]
+    
+    this._activateTab(tab);
 
     this.tabs.forEach(tab => {
         tab.onclick = (event) => {
@@ -43,10 +53,10 @@ LaniTabs.prototype._init = function () {
 
 LaniTabs.prototype._handleTabsClick = function (event, tab) {
     event.preventDefault();
-    this._activeTab(tab);
+    this._activateTab(tab);
 }
 
-LaniTabs.prototype._activeTab = function (tab) {
+LaniTabs.prototype._activateTab = function (tab) {
     this.tabs.forEach(tab => {
         tab.closest('li').classList.remove('lanitabs--active');
     });
@@ -56,6 +66,10 @@ LaniTabs.prototype._activeTab = function (tab) {
     this.panels.forEach(panel => panel.hidden = true);
     const panelActive = document.querySelector(tab.getAttribute('href'));
     panelActive.hidden = false;
+
+    if (this.opt.remember) {
+        history.replaceState(null, null, tab.getAttribute('href'));
+    }
 }
 
 LaniTabs.prototype.switch = function (input) {
@@ -72,7 +86,7 @@ LaniTabs.prototype.switch = function (input) {
         return;
     }
 
-    this._activeTab(tabToActive);
+    this._activateTab(tabToActive);
 }
 
 LaniTabs.prototype.destroy = function () {

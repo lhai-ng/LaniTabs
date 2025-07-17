@@ -15,18 +15,20 @@
     <!-- Container -->
     <ul id="tabs">
         <!-- Tabs -->
-        <li><a href="#tabs1">Tab 1</a></li>
-        <li><a href="#tabs2">Tab 2</a></li>
-        <li><a href="#tabs3">Tab 3</a></li>
+        <li><a href="#tab1">Tab 1</a></li>
+        <li><a href="#tab2">Tab 2</a></li>
+        <li><a href="#tab3">Tab 3</a></li>
     </ul>
 
     <!-- Panels -->
-    <div id="tabs1">Tabs 1 Content</div>
-    <div id="tabs2">Tabs 2 Content</div>
-    <div id="tabs3">Tabs 3 Content</div>
+    <div id="tab1">Tabs 1 Content</div>
+    <div id="tab2">Tabs 2 Content</div>
+    <div id="tab3">Tabs 3 Content</div>
     <script src="src/lanitabs.js"></script>
     <script>
-       const tabs = new LaniTabs('#tabs');
+        const tabs = new LaniTabs('#tabs', {
+            remember: true,
+        });
     </script>
 </body>
 </html>
