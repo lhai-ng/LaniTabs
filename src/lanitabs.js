@@ -5,11 +5,7 @@ function LaniTabs(selector, options = {}) {
         return;
     }
     
-    this.tabs = Array.from(document.querySelectorAll('li a'));
-    this.tabs.onclick = (e) => {
-        console.log(e.target);
-  
-    }
+    this.tabs = Array.from(this.container.querySelectorAll('li a'));      
     if (!this.tabs.length) {
         console.error('LaniTabs: No tabs found inside the container');
         return;
@@ -27,20 +23,20 @@ function LaniTabs(selector, options = {}) {
         .filter(Boolean);
     if (this.tabs.length !== this.panels.length) return;
     
+    this._paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
     this.opt = Object.assign({
         remember: false,
     }, options);
-
-    this._originalTabs = this.container.innerHTML;
 
     this._init();
 }
 
 LaniTabs.prototype._init = function () {
-    const hash = location.hash;
+    const params = new URLSearchParams(location.search);
+    const tabSelector = params.get(this._paramKey);
     const tab = 
-        (this.opt.remember && hash && this.tabs.find(tab => tab.getAttribute('href') === hash)) || 
-        this.tabs[0]
+        (this.opt.remember && tabSelector && this.tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || 
+        this.tabs[0];
     
     this._activateTab(tab);
 
@@ -68,25 +64,27 @@ LaniTabs.prototype._activateTab = function (tab) {
     panelActive.hidden = false;
 
     if (this.opt.remember) {
-        history.replaceState(null, null, tab.getAttribute('href'));
+        const paramsSearch = new URLSearchParams(location.search);
+        paramsSearch.set(this._paramKey, tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, ''))
+        history.replaceState(null, null, `?${paramsSearch}`);
     }
 }
 
 LaniTabs.prototype.switch = function (input) {
-    let tabToActive = null;
+    let tabToActivate = null;
 
     if (typeof input === 'string') {
-        tabToActive = this.tabs.find(tab => tab.getAttribute('href') === input);
+        tabToActivate = this.tabs.find(tab => tab.getAttribute('href') === input);
     } else if (this.tabs.includes(input)) {
-        tabToActive = input;
+        tabToActivate = input;
     }
 
-    if (!tabToActive) {
+    if (!tabToActivate) {
         console.error(`LaniTabs: No tab found with: ${input}`);
         return;
     }
 
-    this._activateTab(tabToActive);
+    this._activateTab(tabToActivate);
 }
 
 LaniTabs.prototype.destroy = function () {
