@@ -41,6 +41,9 @@
     <script>
         const tabs1 = new LaniTabs('#tabs1', {
             remember: true,
+            onChange: (data) => {
+                console.log(data);
+            }
         });
         const tabs2 = new LaniTabs('#tabs2', {
             remember: true,

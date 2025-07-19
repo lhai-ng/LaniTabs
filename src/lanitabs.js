@@ -26,6 +26,7 @@ function LaniTabs(selector, options = {}) {
     this._paramKey = selector.replace(/[^a-zA-Z0-9]/g, '');
     this.opt = Object.assign({
         remember: false,
+        onChange: null,
     }, options);
 
     this._init();
@@ -37,8 +38,9 @@ LaniTabs.prototype._init = function () {
     const tab = 
         (this.opt.remember && tabSelector && this.tabs.find((tab) => tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, '') === tabSelector)) || 
         this.tabs[0];
+    this._currentTab = tab;
     
-    this._activateTab(tab);
+    this._activateTab(tab, false);
 
     this.tabs.forEach(tab => {
         tab.onclick = (event) => {
@@ -49,10 +51,17 @@ LaniTabs.prototype._init = function () {
 
 LaniTabs.prototype._handleTabsClick = function (event, tab) {
     event.preventDefault();
-    this._activateTab(tab);
+    this._tryActivateTab(tab);
 }
 
-LaniTabs.prototype._activateTab = function (tab) {
+LaniTabs.prototype._tryActivateTab = function (tab) {
+    if (this._currentTab !== tab) {
+        this._activateTab(tab);
+        this._currentTab = tab;
+    }
+}
+
+LaniTabs.prototype._activateTab = function (tab, triggerOnChange = true) {
     this.tabs.forEach(tab => {
         tab.closest('li').classList.remove('lanitabs--active');
     });
@@ -67,6 +76,13 @@ LaniTabs.prototype._activateTab = function (tab) {
         const paramsSearch = new URLSearchParams(location.search);
         paramsSearch.set(this._paramKey, tab.getAttribute('href').replace(/[^a-zA-Z0-9]/g, ''))
         history.replaceState(null, null, `?${paramsSearch}`);
+    }
+
+    if (triggerOnChange && typeof this.opt.onChange === 'function') {
+        this.opt.onChange({
+            tab,
+            panel: panelActive,
+        })
     }
 }
 
@@ -84,7 +100,7 @@ LaniTabs.prototype.switch = function (input) {
         return;
     }
 
-    this._activateTab(tabToActivate);
+    this._tryActivateTab(tabToActivate);
 }
 
 LaniTabs.prototype.destroy = function () {
