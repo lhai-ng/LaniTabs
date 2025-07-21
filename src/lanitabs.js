@@ -58,8 +58,8 @@ LaniTabs.prototype._init = function () {
 
 LaniTabs.prototype._tryActivateTab = function (tab) {
     if (this.currentTab !== tab) {
-        this._activateTab(tab);
         this.currentTab = tab;
+        this._activateTab(tab);
     }
 }
 
